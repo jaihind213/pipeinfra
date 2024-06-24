@@ -72,7 +72,7 @@ jobs:
       - name: Build Spark Docker Image
         run: |
           cd spark-3.4.1-bin-hadoop3-scala2.13
-          ./bin/docker-image-tool.sh -r ${{ env.REPO }} -t ${{ env.TAG }} build
-          ./bin/docker-image-tool.sh -r ${{ env.REPO }} -p kubernetes/dockerfiles/spark/bindings/python/Dockerfile -t ${{ env.TAG }}-python build
+          #./bin/docker-image-tool.sh -r ${{ env.REPO }} -t ${{ env.TAG }} build
+          ./bin/docker-image-tool.sh -r ${{ env.REPO }} -p kubernetes/dockerfiles/spark/bindings/python/Dockerfile -t ${{ env.TAG }} build
           docker image ls
           docker push ${{ env.REPO }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}
