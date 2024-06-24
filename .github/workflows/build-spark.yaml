@@ -70,11 +70,3 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DHUB_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DHUB_PASSWORD }}
-      - name: Docker Hub Description
-        if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
-        uses: peter-evans/dockerhub-description@v3
-        with:
-          username: ${{ secrets.DHUB_USERNAME }}
-          password: ${{ secrets.DHUB_PASSWORD }}
-          repository: jaihind213/apache-spark
-          short-description: Apache Spark with Kubernetes support, java17 and python3
