@@ -1,0 +1,80 @@
+# Spark does not provide images for all the variants on dockerhub.
+# MarkerHub needs a Spark image with Scala 2.13, Java 17, Python 3, and Ubuntu.
+# This workflow builds that image and pushes it to the Azure Container Registry.
+# Check https://spark.apache.org/docs/latest/running-on-kubernetes.html#docker-images
+name: Build and Push Apache Spark Image
+on: [ workflow_dispatch ]
+
+env:
+  IMAGE_NAME: jaihind213/apache-spark
+  OCI_IMAGE_TITLE: Apache Spark
+  OCI_IMAGE_DESCRIPTION: Apache Spark Image
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    name: Download spark, build and publish image
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Login to registry
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DHUB_USERNAME }}
+          password: ${{ secrets.DHUB_PASSWORD }}
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Install Scala 2.13
+        run: |
+          curl -O https://downloads.lightbend.com/scala/2.13.8/scala-2.13.8.deb
+          sudo dpkg -i scala-2.13.8.deb
+
+      - name: Download Spark 3.4.1
+        run: |
+          curl -O https://archive.apache.org/dist/spark/spark-3.4.1/spark-3.4.1-bin-hadoop3-scala2.13.tgz
+          tar -xzf spark-3.4.1-bin-hadoop3-scala2.13.tgz
+
+      - name: Check Docker Installation
+        run: |
+          # Check if Docker is installed
+          if ! command -v docker &> /dev/null
+          then
+           echo "Docker is not installed"
+           exit 1
+          fi
+          
+          # Check if there are any Docker images
+          if docker images -q | [ -z "$(cat)" ]
+          then
+           echo "No Docker images found"
+           exit 1
+          else
+           echo "Docker is installed and has images"
+          fi
+
+      - name: Build Spark Docker Image
+        run: |
+          cd spark-3.4.1-bin-hadoop3-scala2.13
+          ./bin/docker-image-tool.sh -r ${{ env.IMAGE_NAME }} -t 3.4.1-scala2.13-java17-python3-ubuntu build
+        env:
+          DOCKER_USERNAME: ${{ secrets.DHUB_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DHUB_PASSWORD }}
+      - name: Docker Hub Description
+        if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DHUB_USERNAME }}
+          password: ${{ secrets.DHUB_PASSWORD }}
+          repository: jaihind213/apache-spark
+          short-description: Apache Spark with Kubernetes support, java17 and python3
