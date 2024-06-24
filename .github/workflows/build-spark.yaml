@@ -6,7 +6,8 @@ name: Build and Push Apache Spark Image
 on: [ workflow_dispatch ]
 
 env:
-  IMAGE_NAME: jaihind213/apache-spark
+  REPO: docker.io/jaihind213
+  IMAGE_NAME: spark
   OCI_IMAGE_TITLE: Apache Spark
   OCI_IMAGE_DESCRIPTION: Apache Spark Image
 
@@ -70,5 +71,5 @@ jobs:
       - name: Build Spark Docker Image
         run: |
           cd spark-3.4.1-bin-hadoop3-scala2.13
-          ./bin/docker-image-tool.sh -r ${{ env.IMAGE_NAME }} -t 3.4.1-scala2.13-java17-python3-ubuntu build
-          ./bin/docker-image-tool.sh -r ${{ env.IMAGE_NAME }} -t 3.4.1-scala2.13-java17-python3-ubuntu push
+          ./bin/docker-image-tool.sh -r ${{ env.REPO }} -t 3.4.1-scala2.13-java17-python3-ubuntu build
+          ./bin/docker-image-tool.sh -r ${{ env.REPO }} -t 3.4.1-scala2.13-java17-python3-ubuntu push
