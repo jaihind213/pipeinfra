@@ -74,4 +74,4 @@ jobs:
           cd spark-3.4.1-bin-hadoop3-scala2.13
           ./bin/docker-image-tool.sh -r ${{ env.REPO }} -t ${{ env.TAG }} build
           docker image ls
-          docker push ${{ env.REPO }}/${{ IMAGE_NAME }}:${{ env.TAG }}
+          docker push ${{ env.REPO }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}
