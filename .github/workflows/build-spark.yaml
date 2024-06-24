@@ -67,6 +67,7 @@ jobs:
         run: |
           cd spark-3.4.1-bin-hadoop3-scala2.13
           ./bin/docker-image-tool.sh -r ${{ env.IMAGE_NAME }} -t 3.4.1-scala2.13-java17-python3-ubuntu build
+          ./bin/docker-image-tool.sh -r ${{ env.IMAGE_NAME }} -t 3.4.1-scala2.13-java17-python3-ubuntu push
         env:
           DOCKER_USERNAME: ${{ secrets.DHUB_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DHUB_PASSWORD }}
