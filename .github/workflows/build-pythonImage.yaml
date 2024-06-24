@@ -7,7 +7,7 @@ on: [ workflow_dispatch ]
 
 env:
   REPO: docker.io/jaihind213
-  NAME: ubuntu-python3
+  IMAGE_NAME: ubuntu-python3
   PY_VERSION: "3.10"
   OCI_IMAGE_TITLE: python3
   OCI_IMAGE_DESCRIPTION: python3 Image
@@ -51,6 +51,7 @@ jobs:
 
       - name: Build python3 Docker Image
         run: |
-          echo "docker build --build-arg="PYTHON_VERSION=${{ env.PY_VERSION }}" -f ./DockerfilePython3 -t ${{ env.REPO }}/${{ env.NAME }}:${{ env.PY_VERSION }} ."
-          docker build --build-arg="PYTHON_VERSION=${{ env.PY_VERSION }}" -f ./DockerfilePython3 -t ${{ env.REPO }}/${{ env.NAME }}:${{ env.PY_VERSION }} .
+          echo "docker build --build-arg="PYTHON_VERSION=${{ env.PY_VERSION }}" -f ./DockerfilePython3 -t ${{ env.REPO }}/${{ env.IMAGE_NAME }}:${{ env.PY_VERSION }} ."
+          docker build --build-arg="PYTHON_VERSION=${{ env.PY_VERSION }}" -f ./DockerfilePython3 -t ${{ env.REPO }}/${{ env.IMAGE_NAME }}:${{ env.PY_VERSION }} .
           docker image ls
+          docker push ${{ env.REPO }}/${{ env.IMAGE_NAME }}:${{ env.PY_VERSION }}
