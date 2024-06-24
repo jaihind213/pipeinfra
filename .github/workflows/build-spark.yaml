@@ -62,12 +62,13 @@ jobs:
           else
            echo "Docker is installed and has images"
           fi
-
+      - name: 🔐Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DHUB_USERNAME }}
+          password: ${{ secrets.DHUB_USERNAME }}
       - name: Build Spark Docker Image
         run: |
           cd spark-3.4.1-bin-hadoop3-scala2.13
           ./bin/docker-image-tool.sh -r ${{ env.IMAGE_NAME }} -t 3.4.1-scala2.13-java17-python3-ubuntu build
           ./bin/docker-image-tool.sh -r ${{ env.IMAGE_NAME }} -t 3.4.1-scala2.13-java17-python3-ubuntu push
-        env:
-          DOCKER_USERNAME: ${{ secrets.DHUB_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DHUB_PASSWORD }}
