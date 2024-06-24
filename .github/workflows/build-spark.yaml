@@ -72,4 +72,5 @@ jobs:
         run: |
           cd spark-3.4.1-bin-hadoop3-scala2.13
           ./bin/docker-image-tool.sh -r ${{ env.REPO }} -t 3.4.1-scala2.13-java17-python3-ubuntu build
+          docker image ls
           ./bin/docker-image-tool.sh -r ${{ env.REPO }} -t 3.4.1-scala2.13-java17-python3-ubuntu push
