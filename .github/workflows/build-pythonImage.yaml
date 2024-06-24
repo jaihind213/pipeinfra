@@ -51,5 +51,5 @@ jobs:
 
       - name: Build python3 Docker Image
         run: |
-          docker build --build-arg="PYTHON_VERSION=${{ env.PY_VERSION }}" -f ./DockerfilePython3 -t ${{ env.REPO }}/${{ env.NAME }}:${{ env.PY_VERSION }} .
+          echo `docker build --build-arg="PYTHON_VERSION=${{ env.PY_VERSION }}" -f ./DockerfilePython3 -t ${{ env.REPO }}/${{ env.NAME }}:${{ env.PY_VERSION }} .`
           docker image ls
