@@ -1,0 +1,18 @@
+FROM ubuntu:22.04
+LABEL maintainer="jaihind213@gmail.com"
+
+ARG PYTHON_VERSION=3.10
+ENV LANG C.UTF-8
+ENV LC_ALL C.UTF-8
+
+
+RUN apt update && apt autoclean && apt install -y software-properties-common && apt update && add-apt-repository ppa:apt-fast/stable -y && add-apt-repository ppa:deadsnakes/ppa && apt update && apt install -y apt-fast
+RUN apt-fast -y install linux-libc-dev libssl-dev
+RUN apt-fast -y install libblis64-3-pthread
+
+RUN apt-fast update && apt-fast install -y python${PYTHON_VERSION}
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python${PYTHON_VERSION} 1
+
+#for psutil need to do python3.10-dev u need it later when u do '' pip3 install -r requirements-dev.txt''
+RUN apt-fast -y install python${PYTHON_VERSION}-dev
+RUN apt-fast -y install curl && curl -sS https://bootstrap.pypa.io/get-pip.py | python3 && apt-fast -y remove curl

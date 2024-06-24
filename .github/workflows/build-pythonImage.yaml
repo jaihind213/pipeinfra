@@ -7,9 +7,10 @@ on: [ workflow_dispatch ]
 
 env:
   REPO: docker.io/jaihind213
-  TAG: 3.4.1-scala2.13-java17-ubuntu
-  OCI_IMAGE_TITLE: Apache Spark
-  OCI_IMAGE_DESCRIPTION: Apache Spark Image
+  NAME: ubuntu-python3
+  PY_VERSION: 3.10
+  OCI_IMAGE_TITLE: python3
+  OCI_IMAGE_DESCRIPTION: python3 Image
 
 permissions:
   contents: read
@@ -17,7 +18,7 @@ permissions:
 
 jobs:
   build:
-    name: Download spark, build and publish image
+    name: build and publish image
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch'
     steps:
@@ -29,22 +30,6 @@ jobs:
         with:
           username: ${{ secrets.DHUB_USERNAME }}
           password: ${{ secrets.DHUB_PASSWORD }}
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-
-      - name: Install Scala 2.13
-        run: |
-          curl -O https://downloads.lightbend.com/scala/2.13.8/scala-2.13.8.deb
-          sudo dpkg -i scala-2.13.8.deb
-
-      - name: Download Spark 3.4.1
-        run: |
-          curl -O https://archive.apache.org/dist/spark/spark-3.4.1/spark-3.4.1-bin-hadoop3-scala2.13.tgz
-          tar -xzf spark-3.4.1-bin-hadoop3-scala2.13.tgz
 
       - name: Check Docker Installation
         run: |
@@ -63,11 +48,8 @@ jobs:
           else
            echo "Docker is installed and has images"
           fi
-      - name: Build Spark Docker Image
+
+      - name: Build python3 Docker Image
         run: |
-          cd spark-3.4.1-bin-hadoop3-scala2.13
-          #build both pyspark along with jvm spark image
-          ./bin/docker-image-tool.sh -r ${{ env.REPO }} -f kubernetes/dockerfiles/spark/Dockerfile -p kubernetes/dockerfiles/spark/bindings/python/Dockerfile -t ${{ env.TAG }} build
+          docker build --build-arg="PYTHON_VERSION=${{ env.PY_VERSION }}" -f ./DockerfilePython3 -t ${{ env.REPO }}/${{ env.NAME }}:${{ env.PY_VERSION }} .
           docker image ls
-          docker push ${{ env.REPO }}/spark:${{ env.TAG }}
-          docker push ${{ env.REPO }}/spark-py:${{ env.TAG }}
