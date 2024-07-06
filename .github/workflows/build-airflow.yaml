@@ -17,7 +17,7 @@ permissions:
 
 jobs:
   build:
-    name: Download spark, build and publish image
+    name: build image
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch'
     steps:
@@ -31,8 +31,6 @@ jobs:
           password: ${{ secrets.DHUB_PASSWORD }}
       - name: Build Spark Docker Image
         run: |
-          cd spark-3.4.1-bin-hadoop3-scala2.13
-          #build both pyspark along with jvm spark image
           docker build -t ${{ env.REPO }}/airflow:${{ env.TAG }} -f DockerfileAirflow .
           docker image ls
           docker push ${{ env.REPO }}/airflow:${{ env.TAG }}
