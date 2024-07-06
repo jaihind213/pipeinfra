@@ -1,0 +1,38 @@
+# Spark does not provide images for all the variants on dockerhub.
+# MarkerHub needs a Spark image with Scala 2.13, Java 17, Python 3, and Ubuntu.
+# This workflow builds that image and pushes it to the Azure Container Registry.
+# Check https://spark.apache.org/docs/latest/running-on-kubernetes.html#docker-images
+name: Build and Push Airflow
+on: [ workflow_dispatch ]
+
+env:
+  REPO: docker.io/jaihind213
+  TAG: 2.0
+  OCI_IMAGE_TITLE: Airflow
+  OCI_IMAGE_DESCRIPTION: Airflow with kubectl and helm & git
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    name: Download spark, build and publish image
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🔐Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DHUB_USERNAME }}
+          password: ${{ secrets.DHUB_PASSWORD }}
+      - name: Build Spark Docker Image
+        run: |
+          cd spark-3.4.1-bin-hadoop3-scala2.13
+          #build both pyspark along with jvm spark image
+          docker build -t ${{ env.REPO }}/airflow:${{ env.TAG }} -f DockerfileAirflow .
+          docker image ls
+          docker push ${{ env.REPO }}/airflow:${{ env.TAG }}
