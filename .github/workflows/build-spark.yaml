@@ -7,7 +7,7 @@ on: [ workflow_dispatch ]
 
 env:
   REPO: docker.io/jaihind213
-  TAG: 3.4.1-scala2.13-java17-ubuntu
+  TAG: 3.5.1-scala2.13-java17-ubuntu
   OCI_IMAGE_TITLE: Apache Spark
   OCI_IMAGE_DESCRIPTION: Apache Spark Image
 
@@ -41,10 +41,10 @@ jobs:
           curl -O https://downloads.lightbend.com/scala/2.13.8/scala-2.13.8.deb
           sudo dpkg -i scala-2.13.8.deb
 
-      - name: Download Spark 3.4.1
+      - name: Download Spark 3.5.1
         run: |
-          curl -O https://archive.apache.org/dist/spark/spark-3.4.1/spark-3.4.1-bin-hadoop3-scala2.13.tgz
-          tar -xzf spark-3.4.1-bin-hadoop3-scala2.13.tgz
+          curl -O https://archive.apache.org/dist/spark/spark-3.5.1/spark-3.5.1-bin-hadoop3-scala2.13.tgz
+          tar -xzf spark-3.5.1-bin-hadoop3-scala2.13.tgz
 
       - name: Check Docker Installation
         run: |
@@ -65,9 +65,12 @@ jobs:
           fi
       - name: Build Spark Docker Image
         run: |
-          cd spark-3.4.1-bin-hadoop3-scala2.13
+          cd spark-3.5.1-bin-hadoop3-scala2.13
           #build both pyspark along with jvm spark image
-          ./bin/docker-image-tool.sh -r ${{ env.REPO }} -f kubernetes/dockerfiles/spark/Dockerfile -p kubernetes/dockerfiles/spark/bindings/python/Dockerfile -t ${{ env.TAG }} build
+          #build crossp platform using -X option
+          #Note: buildx, which does cross building, needs to do the push during build
+          #./bin/docker-image-tool.sh -r ${{ env.REPO }} -f kubernetes/dockerfiles/spark/Dockerfile -p kubernetes/dockerfiles/spark/bindings/python/Dockerfile -t ${{ env.TAG }} -X build
+          ./bin/docker-image-tool.sh -r ${{ env.REPO }} -f kubernetes/dockerfiles/spark/Dockerfile -p DockerfileSparkPythonBindings -t ${{ env.TAG }} -X build
           docker image ls
-          docker push ${{ env.REPO }}/spark:${{ env.TAG }}
-          docker push ${{ env.REPO }}/spark-py:${{ env.TAG }}
+          #docker push ${{ env.REPO }}/spark:${{ env.TAG }}
+          #docker push ${{ env.REPO }}/spark-py:${{ env.TAG }}
