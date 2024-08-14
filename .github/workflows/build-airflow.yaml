@@ -7,9 +7,10 @@ on: [ workflow_dispatch ]
 
 env:
   REPO: docker.io/jaihind213
-  TAG: "2.0"
+  TAG: "3.0"
   OCI_IMAGE_TITLE: Airflow
   OCI_IMAGE_DESCRIPTION: Airflow with kubectl and helm & git
+  PLATFORM: linux/amd64,linux/arm64
 
 permissions:
   contents: read
@@ -31,6 +32,9 @@ jobs:
           password: ${{ secrets.DHUB_PASSWORD }}
       - name: Build Spark Docker Image
         run: |
-          docker build -t ${{ env.REPO }}/airflow:${{ env.TAG }} -f DockerfileAirflow .
-          docker image ls
-          docker push ${{ env.REPO }}/airflow:${{ env.TAG }}
+          export DOCKER_BUILDKIT=1
+          docker buildx create --use
+          docker buildx build --output=type=registry --platform ${{ env.PLATFORM }} -t ${{ env.REPO }}/airflow:${{ env.TAG }} -f DockerfileAirflow . 
+          #docker build -t ${{ env.REPO }}/airflow:${{ env.TAG }} -f DockerfileAirflow .
+          #docker image ls
+          #docker push ${{ env.REPO }}/airflow:${{ env.TAG }}
