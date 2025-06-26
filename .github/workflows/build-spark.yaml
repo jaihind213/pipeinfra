@@ -7,8 +7,8 @@ on: [ workflow_dispatch ]
 
 env:
   REPO: docker.io/jaihind213
-  #TAG: 3.5.1-scala2.13-java17-ubuntu
-  TAG: 3.5.1-scala2.13-java11-ubuntu
+  TAG: 3.5.1-scala2.13-java17-ubuntu
+  #TAG: 3.5.1-scala2.13-java11-ubuntu
   OCI_IMAGE_TITLE: Apache Spark
   OCI_IMAGE_DESCRIPTION: Apache Spark Image
 
@@ -38,7 +38,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           #java-version: '17'
-          java-version: '11'
+          java-version: '17'
           distribution: 'temurin'
 
       - name: Install Scala 2.13
@@ -75,8 +75,8 @@ jobs:
           #build crossp platform using -X option
           #Note: buildx, which does cross building, needs to do the push during build
           #./bin/docker-image-tool.sh -r ${{ env.REPO }} -f kubernetes/dockerfiles/spark/Dockerfile -p kubernetes/dockerfiles/spark/bindings/python/Dockerfile -t ${{ env.TAG }} -X build
-          #./bin/docker-image-tool.sh -r ${{ env.REPO }} -f kubernetes/dockerfiles/spark/Dockerfile -p ../DockerfileSparkPythonBindings -t ${{ env.TAG }} -X build
-          ./bin/docker-image-tool.sh -r ${{ env.REPO }} -f kubernetes/dockerfiles/spark/Dockerfile -p ../DockerfileSparkPythonBindings -t ${{ env.TAG }} -X -b java_image_tag=11-jre build 
+          ./bin/docker-image-tool.sh -r ${{ env.REPO }} -f kubernetes/dockerfiles/spark/Dockerfile -p ../DockerfileSparkPythonBindings -t ${{ env.TAG }} -X build
+          #./bin/docker-image-tool.sh -r ${{ env.REPO }} -f kubernetes/dockerfiles/spark/Dockerfile -p ../DockerfileSparkPythonBindings -t ${{ env.TAG }} -X -b java_image_tag=11-jre build 
           docker image ls
           #docker push ${{ env.REPO }}/spark:${{ env.TAG }}
           #docker push ${{ env.REPO }}/spark-py:${{ env.TAG }}
