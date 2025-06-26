@@ -75,7 +75,7 @@ jobs:
           #build crossp platform using -X option
           #Note: buildx, which does cross building, needs to do the push during build
           #./bin/docker-image-tool.sh -r ${{ env.REPO }} -f kubernetes/dockerfiles/spark/Dockerfile -p kubernetes/dockerfiles/spark/bindings/python/Dockerfile -t ${{ env.TAG }} -X build
-          ./bin/docker-image-tool.sh -r ${{ env.REPO }} -f kubernetes/dockerfiles/spark/Dockerfile -p ../DockerfileSparkPythonBindings -t ${{ env.TAG }} -X build
+          ./bin/docker-image-tool.sh -r ${{ env.REPO }} -f kubernetes/dockerfiles/spark/Dockerfile -p ../DockerfileSparkPythonBindings -t ${{ env.TAG }} -X -b base_image=spark-py build
           #./bin/docker-image-tool.sh -r ${{ env.REPO }} -f kubernetes/dockerfiles/spark/Dockerfile -p ../DockerfileSparkPythonBindings -t ${{ env.TAG }} -X -b java_image_tag=11-jre build 
           docker image ls
           #docker push ${{ env.REPO }}/spark:${{ env.TAG }}
