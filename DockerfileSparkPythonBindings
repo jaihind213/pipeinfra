@@ -27,9 +27,9 @@ RUN echo $base_img
 RUN echo "----------------abc"
 RUN mkdir ${SPARK_HOME}/python
 RUN apt-get update && \
-    apt install --ignore-installed  -y python3 python3-pip && \
-    pip3 install --ignore-installed -y --upgrade --break-system-packages pip setuptools && \
-    pip3 install --ignore-installed -y --break-system-packages wheel && \
+    apt install -y python3 python3-pip && \
+    pip3 install --ignore-installed --upgrade --break-system-packages pip setuptools && \
+    pip3 install --ignore-installed --break-system-packages wheel && \
     # Removed the .cache to save space
     rm -rf /root/.cache && rm -rf /var/cache/apt/* && rm -rf /var/lib/apt/lists/*
 
