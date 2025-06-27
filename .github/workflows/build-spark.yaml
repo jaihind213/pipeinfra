@@ -83,10 +83,10 @@ jobs:
       - name: Build Spark Docker Image
         run: |
           cd spark-3.5.1-bin-hadoop3-scala2.13
-          #build both pyspark along with jvm spark image
-          #build crossp platform using -X option
-          #Note: buildx, which does cross building, needs to do the push during build
-          ./bin/docker-image-tool.sh -r ${{ env.REPO }} -f kubernetes/dockerfiles/spark/Dockerfile -t ${{ env.TAG }} -X build 
+          #build spark first
+          #./bin/docker-image-tool.sh -r ${{ env.REPO }} -f kubernetes/dockerfiles/spark/Dockerfile -t ${{ env.TAG }} -X build 
+          #then try pyspark
+          ./bin/docker-image-tool.sh -r ${{ env.REPO }}  -p ../DockerfileSparkPythonBindings -t ${{ env.TAG }} -X -b base_image=${{ env.REPO }}:${{ env.TAG }} build
           docker image ls
           #docker push ${{ env.REPO }}/spark:${{ env.TAG }}
           #docker push ${{ env.REPO }}/spark-py:${{ env.TAG }}
