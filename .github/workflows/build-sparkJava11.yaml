@@ -71,7 +71,7 @@ jobs:
         run: |
           which python3 || echo "which python"
           python3 -m pip config set global.break-system-packages true
-          cd spark-3.5.1-bin-hadoop3-scala2.13
+          cd spark-3.5.2-bin-hadoop3-scala2.13
           #build both pyspark along with jvm spark image
           #build crossp platform using -X option
           #Note: buildx, which does cross building, needs to do the push during build
