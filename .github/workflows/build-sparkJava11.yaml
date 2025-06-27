@@ -1,0 +1,84 @@
+# Spark does not provide images for all the variants on dockerhub.
+# MarkerHub needs a Spark image with Scala 2.13, Java 17, Python 3, and Ubuntu.
+# This workflow builds that image and pushes it to the Azure Container Registry.
+# Check https://spark.apache.org/docs/latest/running-on-kubernetes.html#docker-images
+name: Build & Push Apache Spark Image,Java11
+on: [ workflow_dispatch ]
+
+env:
+  REPO: docker.io/jaihind213
+  TAG: 3.5.2-scala2.13-java11-ubuntu
+  OCI_IMAGE_TITLE: Apache Spark
+  OCI_IMAGE_DESCRIPTION: Apache Spark Image
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    name: Download spark, build and publish image
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🔐Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DHUB_USERNAME }}
+          password: ${{ secrets.DHUB_PASSWORD }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          #java-version: '17'
+          java-version: '11'
+          distribution: 'temurin'
+
+      - name: Install Scala 2.13
+        run: |
+          curl -O https://downloads.lightbend.com/scala/2.13.8/scala-2.13.8.deb
+          sudo dpkg -i scala-2.13.8.deb
+
+      - name: Download Spark 3.5.2
+        run: |
+          curl -O https://archive.apache.org/dist/spark/spark-3.5.2/spark-3.5.2-bin-hadoop3-scala2.13.tgz
+          tar -xzf spark-3.5.2-bin-hadoop3-scala2.13.tgz
+
+      - name: Check Docker Installation
+        run: |
+          # Check if Docker is installed
+          if ! command -v docker &> /dev/null
+          then
+           echo "Docker is not installed"
+           exit 1
+          fi
+          
+          # Check if there are any Docker images
+          if docker images -q | [ -z "$(cat)" ]
+          then
+           echo "No Docker images found"
+           exit 1
+          else
+           echo "Docker is installed and has images"
+          fi
+      - name: Build Spark Docker Image
+        run: |
+          which python3 || echo "which python"
+          python3 -m pip config set global.break-system-packages true
+          cd spark-3.5.1-bin-hadoop3-scala2.13
+          #build both pyspark along with jvm spark image
+          #build crossp platform using -X option
+          #Note: buildx, which does cross building, needs to do the push during build
+          #./bin/docker-image-tool.sh -r ${{ env.REPO }} -f kubernetes/dockerfiles/spark/Dockerfile -p kubernetes/dockerfiles/spark/bindings/python/Dockerfile -t ${{ env.TAG }} -X build
+          #./bin/docker-image-tool.sh -r ${{ env.REPO }} -f kubernetes/dockerfiles/spark/Dockerfile -p ../DockerfileSparkPythonBindings -t ${{ env.TAG }} -X -b base_image=spark-py build
+          #./bin/docker-image-tool.sh -r ${{ env.REPO }} -f kubernetes/dockerfiles/spark/Dockerfile -p ../DockerfileSparkPythonBindings -t ${{ env.TAG }} -X -b java_image_tag=11-jre build
+          ./bin/docker-image-tool.sh -r ${{ env.REPO }} -f kubernetes/dockerfiles/spark/Dockerfile -p ../DockerfileSparkPythonBindings -t ${{ env.TAG }} -X -b java_image_tag=11-jre build
+          docker image ls
+          docker push ${{ env.REPO }}/spark:${{ env.TAG }}
+          docker push ${{ env.REPO }}/spark-py:${{ env.TAG }}
