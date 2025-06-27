@@ -8,7 +8,6 @@ on: [ workflow_dispatch ]
 env:
   REPO: docker.io/jaihind213
   TAG: 3.5.1-scala2.13-java17-ubuntu
-  #TAG: 3.5.1-scala2.13-java11-ubuntu
   OCI_IMAGE_TITLE: Apache Spark
   OCI_IMAGE_DESCRIPTION: Apache Spark Image
 
@@ -70,13 +69,16 @@ jobs:
           fi
       - name: Build Spark Docker Image
         run: |
+          which python3 || echo "which python"
+          python3 -m pip config set global.break-system-packages true
           cd spark-3.5.1-bin-hadoop3-scala2.13
           #build both pyspark along with jvm spark image
           #build crossp platform using -X option
           #Note: buildx, which does cross building, needs to do the push during build
           #./bin/docker-image-tool.sh -r ${{ env.REPO }} -f kubernetes/dockerfiles/spark/Dockerfile -p kubernetes/dockerfiles/spark/bindings/python/Dockerfile -t ${{ env.TAG }} -X build
-          ./bin/docker-image-tool.sh -r ${{ env.REPO }} -f kubernetes/dockerfiles/spark/Dockerfile -p ../DockerfileSparkPythonBindings -t ${{ env.TAG }} -X -b base_image=spark-py build
-          #./bin/docker-image-tool.sh -r ${{ env.REPO }} -f kubernetes/dockerfiles/spark/Dockerfile -p ../DockerfileSparkPythonBindings -t ${{ env.TAG }} -X -b java_image_tag=11-jre build 
+          #./bin/docker-image-tool.sh -r ${{ env.REPO }} -f kubernetes/dockerfiles/spark/Dockerfile -p ../DockerfileSparkPythonBindings -t ${{ env.TAG }} -X -b base_image=spark-py build
+          #./bin/docker-image-tool.sh -r ${{ env.REPO }} -f kubernetes/dockerfiles/spark/Dockerfile -p ../DockerfileSparkPythonBindings -t ${{ env.TAG }} -X -b java_image_tag=11-jre build
+          ./bin/docker-image-tool.sh -r ${{ env.REPO }} -f kubernetes/dockerfiles/spark/Dockerfile -p ../DockerfileSparkPythonBindings -t ${{ env.TAG }} -X build
           docker image ls
           #docker push ${{ env.REPO }}/spark:${{ env.TAG }}
           #docker push ${{ env.REPO }}/spark-py:${{ env.TAG }}
