@@ -2,7 +2,7 @@
 # MarkerHub needs a Spark image with Scala 2.13, Java 17, Python 3, and Ubuntu.
 # This workflow builds that image and pushes it to the Azure Container Registry.
 # Check https://spark.apache.org/docs/latest/running-on-kubernetes.html#docker-images
-name: Build & Push Apache Spark Image,Java11
+name: Build & Push Spark Image,Java11
 on: [ workflow_dispatch ]
 
 env:
@@ -33,7 +33,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Set up JDK 17
+      - name: Set up JDK 11
         uses: actions/setup-java@v3
         with:
           #java-version: '17'
