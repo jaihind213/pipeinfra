@@ -82,6 +82,8 @@ jobs:
 #          #docker push ${{ env.REPO }}/spark-py:${{ env.TAG }}
       - name: Build Spark Docker Image
         run: |
+          which python3 || echo "which python"
+          python3 -m pip config set global.break-system-packages true
           cd spark-3.5.1-bin-hadoop3-scala2.13
           #build spark first
           #./bin/docker-image-tool.sh -r ${{ env.REPO }} -f kubernetes/dockerfiles/spark/Dockerfile -t ${{ env.TAG }} -X build 
