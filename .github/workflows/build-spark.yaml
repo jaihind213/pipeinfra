@@ -86,7 +86,7 @@ jobs:
           #build spark first
           #./bin/docker-image-tool.sh -r ${{ env.REPO }} -f kubernetes/dockerfiles/spark/Dockerfile -t ${{ env.TAG }} -X build 
           #then try pyspark
-          ./bin/docker-image-tool.sh -r ${{ env.REPO }}  -p ../DockerfileSparkPythonBindings -t ${{ env.TAG }} -X -b base_image=${{ env.REPO }}:${{ env.TAG }} build
+          ./bin/docker-image-tool.sh -r ${{ env.REPO }}  -p ../DockerfileSparkPythonBindings -t ${{ env.TAG }} -X -b base_img=${{ env.REPO }}:${{ env.TAG }} build
           docker image ls
           #docker push ${{ env.REPO }}/spark:${{ env.TAG }}
           #docker push ${{ env.REPO }}/spark-py:${{ env.TAG }}
