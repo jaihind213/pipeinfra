@@ -80,5 +80,5 @@ jobs:
           #./bin/docker-image-tool.sh -r ${{ env.REPO }} -f kubernetes/dockerfiles/spark/Dockerfile -p ../DockerfileSparkPythonBindings -t ${{ env.TAG }} -X -b java_image_tag=11-jre build
           ./bin/docker-image-tool.sh -r ${{ env.REPO }} -f kubernetes/dockerfiles/spark/Dockerfile -p ../DockerfileSparkPythonBindings -t ${{ env.TAG }} -X build
           docker image ls
-          #docker push ${{ env.REPO }}/spark:${{ env.TAG }}
-          #docker push ${{ env.REPO }}/spark-py:${{ env.TAG }}
+          docker push ${{ env.REPO }}/spark:${{ env.TAG }}
+          docker push ${{ env.REPO }}/spark-py:${{ env.TAG }}
