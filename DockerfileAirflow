@@ -27,7 +27,7 @@ RUN apt-get update && \
     pip3 install --ignore-installed --upgrade --break-system-packages pip setuptools && \
     pip3 install --ignore-installed --break-system-packages wheel && \
     pip3 install --ignore-installed --break-system-packages kubernetes==33.1.0 && \
-    pip3 install --ignore-installed --break-system-packages apache-airflow-providers-cncf-kubernetes==9.0.1 && \
+    pip3 install --ignore-installed --break-system-packages apache-airflow-providers-cncf-kubernetes && \
     pip3 install --ignore-installed --break-system-packages asyncpg && \
     # Removed the .cache to save space
     rm -rf /root/.cache && rm -rf /var/cache/apt/* && rm -rf /var/lib/apt/lists/*
