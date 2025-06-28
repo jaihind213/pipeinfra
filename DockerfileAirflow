@@ -32,6 +32,7 @@ USER 0
 #    #pip3 install --ignore-installed --break-system-packages asyncpg && \
 #    # Removed the .cache to save space
 #    rm -rf /root/.cache && rm -rf /var/cache/apt/* && rm -rf /var/lib/apt/lists/*
-
+#0.0.3
+RUN pip3 install --ignore-installed  apache-airflow-providers-cncf-kubernetes kubernetes==33.1.0
 USER airflow
 # pip3 install --ignore-installed --break-system-packages asyncpg was needed by 2.9.2 on k8s in digital ocean
