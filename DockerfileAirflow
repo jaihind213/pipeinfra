@@ -1,4 +1,5 @@
-FROM apache/airflow:2.9.2-python3.10
+#FROM apache/airflow:2.9.2-python3.10
+FROM apache/airflow:2.10.5-python3.10
 #todo add helm, k8s client git etc
 #USER 0
 #RUN apt update && \
@@ -28,8 +29,9 @@ RUN apt-get update && \
     pip3 install --ignore-installed --break-system-packages wheel && \
     pip3 install --ignore-installed --break-system-packages kubernetes==33.1.0 && \
     pip3 install --ignore-installed --break-system-packages apache-airflow-providers-cncf-kubernetes && \
-    pip3 install --ignore-installed --break-system-packages asyncpg && \
+    #pip3 install --ignore-installed --break-system-packages asyncpg && \
     # Removed the .cache to save space
     rm -rf /root/.cache && rm -rf /var/cache/apt/* && rm -rf /var/lib/apt/lists/*
 
 USER airflow
+# pip3 install --ignore-installed --break-system-packages asyncpg was needed by 2.9.2 on k8s in digital ocean
