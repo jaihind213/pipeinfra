@@ -7,7 +7,7 @@ on: [ workflow_dispatch ]
 
 env:
   REPO: docker.io/jaihind213
-  TAG: "2.9.2-0.0.2"
+  TAG: "2.9.2-0.0.3"
   OCI_IMAGE_TITLE: Airflow
   OCI_IMAGE_DESCRIPTION: Airflow with kubectl and helm & git
   PLATFORM: linux/amd64,linux/arm64
