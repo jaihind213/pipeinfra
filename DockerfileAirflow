@@ -34,5 +34,7 @@ USER 0
 #    rm -rf /root/.cache && rm -rf /var/cache/apt/* && rm -rf /var/lib/apt/lists/*
 #0.0.3
 RUN  pip3 install  apache-airflow-providers-cncf-kubernetes==10.6.0
+RUN mkdir -p /opt/airflow/dags/templates
+RUN chown airflow:root /opt/airflow/dags/templates
 USER airflow
 # pip3 install --ignore-installed --break-system-packages asyncpg was needed by 2.9.2 on k8s in digital ocean
